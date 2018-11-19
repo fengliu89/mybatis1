@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flz.kc.dao.NewsDao">
+    <!--查询-->
+    <select id="getList" resultType="map">
+        select newsId,title,content,typeid from TB_NEWS
+    </select>
+    <!--添加-->
+    <insert id="add" >
+        insert into TB_NEWS values(#{newsId},#{title},#{content},#{typeid})
+    </insert>
+    <!--根据编号查询信息-->
+    <select id="getById" parameterType="int" resultType="map">
+         select newsId,title,content,typeid from TB_NEWS where newsId=#{newsId}
+    </select>
+    <!--修改-->
+    <update id="update">
+        update TB_NEWS set title=#{title},content=#{content} where newsId=#{newsId}
+    </update>
+    <!--删除-->
+    <delete id="delete" parameterType="int">
+        delete from TB_NEWS where newsId=#{newsId}
+    </delete>
+</mapper>

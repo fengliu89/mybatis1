@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.DeptDao">
+    <sql id="sel">
+        select deptno as deptNo,dname,loc
+    </sql>
+    <!--select 查询标签 id和接口中的方法名称对应 parameterType方法的参数 resultType 返回值类型-->
+    <select id="getList" resultType="com.aaa.mb.entity.Dept">
+        <include refid="sel"></include> from dept
+    </select>
+    <!--部门添加-->
+    <insert id="add" parameterType="com.aaa.mb.entity.Dept">
+        <!--序列的使用,现在数据库创建序列,然后在需要使用序列的列上,加上 序列名称.nextval-->
+        <!--无效的列类型1111 解决办法,数据库里该列可以为空,在该列上加上jdbcType-->
+        insert into dept values(seq_dept_id.nextval,#{dname,jdbcType=VARCHAR},#{loc})
+    </insert>
+    <!-- 根据部门编号查询部门信息-->
+    <select id="getById" parameterType="int" resultType="com.aaa.mb.entity.Dept">
+        <include refid="sel"></include> from dept where deptno=#{deptNo}
+    </select>
+    <!--更新-->
+    <update id="update" parameterType="com.aaa.mb.entity.Dept">
+        update dept set dname=#{dname},loc=#{loc} where deptno=#{deptNo}
+    </update>
+
+    <!--删除 大于 > &Gt: 小于 Lt;-->
+    <delete id="delete" parameterType="int">
+      delete from dept where deptno=#{deptId}
+    </delete>
+    <!--高级映射 一对多-->
+    <select id="oneToMany" resultMap="deptAndEmps">
+        select d.deptno,d.dname,d.loc,e.empno,e.ename,e.sal,e.comm,e.job from dept d left join emp e on d.deptno=e.deptno
+    </select>
+    <!--一对多映射配置-->
+    <resultMap id="deptAndEmps" type="dept">
+        <!--javaType="int" jdbcType="INTEGER" 都可以不写 前者为实体类中的属性 后者为数据库中的类型-->
+        <id column="deptno" property="deptNo" javaType="int" jdbcType="INTEGER" ></id>
+        <result column="dname" property="dname"></result>
+        <result column="loc" property="loc"></result>
+        <collection property="empList" ofType="emp">
+            <id column="empno" property="empNO"></id>
+            <id column="comm" property="comm"></id>
+            <id column="sal" property="salary"></id>
+            <id column="job" property="job"></id>
+            <id column="ename" property="ename"></id>
+        </collection>
+    </resultMap>
+</mapper>
